@@ -1,11 +1,12 @@
 import { useContext, useState, useEffect } from "react";
 import { ConfigurationContext } from "../ConfigurationContext";
-import { fromDateTime, fromDateTimePartsToFormat, DATE } from "../Lib/DateTime/date-time-helpers";
+import { fromDateTime, fromDateTimeParts } from "../Lib/DateTime/date-time-helpers";
 import { DateTime } from "luxon";
 import { t } from "i18next";
 import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
 import { number } from "yup";
 import { CostumerTable } from "../Components/Costumer/CostumerTable";
+import { Date } from '../../react/Lib/DateTime';
 
 export function Home() {
     const configuration = useContext(ConfigurationContext);
@@ -15,7 +16,7 @@ export function Home() {
     const [year, setYear] = useState<number | null>(today.date.year);
     const [month, setMonth] = useState<number | null>(today.date.month);
     const [day, setDay] = useState<number | null>(today.date.day);
-    const [gridDate, setGridDate] = useState<string>('')
+    const [gridDate, setGridDate] = useState<Date>()
 
     const goToToday = async () => {
         const today = fromDateTime(configuration.get.locale, 'Gregorian', DateTime.utc());
@@ -33,7 +34,7 @@ export function Home() {
         if (Number(day) < 1 || Number(day) > 31) return;
 
         setIsLoading(true)
-        try { setGridDate(fromDateTimePartsToFormat({ ...configuration.get.locale, calendar: 'Gregorian', zone: 'UTC' }, configuration.get.locale, { year, month, day }, undefined, DATE)) }
+        try { setGridDate(fromDateTimeParts({ ...configuration.get.locale, calendar: 'Gregorian', zone: 'UTC' }, configuration.get.locale, { year, month, day }, undefined).date) }
         finally { setIsLoading(false) }
     }, [year, month, day])
 
@@ -71,7 +72,7 @@ export function Home() {
                 <Grid item xs={12} />
 
                 <Grid item container justifyContent={'center'} xs={12}>
-                    {isLoading
+                    {isLoading && gridDate
                         ? <CircularProgress />
                         :
                         <Box sx={{ height: '70vh', width: '100%', p: 2 }}>

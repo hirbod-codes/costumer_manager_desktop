@@ -3,59 +3,56 @@ import fs from 'fs'
 import path from 'path'
 import { array, mixed, string } from 'yup'
 import { Order } from './Order'
+import { Date } from '../../react/Lib/DateTime'
 
-export function get(date: string): Order[] | undefined {
+export function get(date: Date): Order[] | undefined {
     try {
-        if (!string().required().min(1).isValidSync(date))
+        if (!mixed<Date>().required().isValidSync(date))
             return undefined
 
-        date = date.trim()
-
         const costumerFolder = path.join(app.getPath('appData'), app.getName(), 'Costumers')
-        const costumerFile = path.join(costumerFolder, date + '.json')
+        const costumerFileName = `${date.year.toFixed(0)}-${date.month.toFixed(0)}-${date.day.toFixed(0)}.json`
+        const costumerFilePath = path.join(costumerFolder, costumerFileName)
 
         if (!fs.existsSync(costumerFolder))
             fs.mkdirSync(costumerFolder, { recursive: true })
 
-        if (!fs.existsSync(costumerFile))
+        if (!fs.existsSync(costumerFilePath))
             return undefined
 
-        const costumerJson = fs.readFileSync(costumerFile).toString()
+        const costumerJson = fs.readFileSync(costumerFilePath).toString()
+
         return JSON.parse(costumerJson)
     }
-    finally { return undefined }
+    catch (err) { console.error(err); return undefined }
 }
 
-export function set(date: string, orders: Order[]): boolean {
+export function set(date: Date, orders: Order[]): boolean {
     try {
-        if (!string().required().min(1).isValidSync(date))
+        if (!mixed<Date>().required().isValidSync(date))
             return false
 
         if (!array().required().min(1).of(mixed<Order>().required()).isValidSync(orders))
             return false
 
-        date = date.trim()
-
         const costumerFolder = path.join(app.getPath('appData'), app.getName(), 'Costumers')
-        const costumerFile = path.join(costumerFolder, date + '.json')
+        const costumerFileName = `${date.year.toFixed(0)}-${date.month.toFixed(0)}-${date.day.toFixed(0)}.json`
+        const costumerFilePath = path.join(costumerFolder, costumerFileName)
 
         if (!fs.existsSync(costumerFolder))
             fs.mkdirSync(costumerFolder, { recursive: true })
 
-        fs.writeFileSync(costumerFile, JSON.stringify(orders))
+        const data = JSON.stringify(orders)
+        fs.writeFileSync(costumerFilePath, data)
 
         return true
     }
-    finally { return false }
+    catch (err) { console.error(err); return false }
 }
 
 export function handleCostumersEvents() {
-    ipcMain.handle('get-costumers', (_e, { date }: { date: string }) => {
-        return get(date)
-    })
+    ipcMain.handle('get-costumers', (_e, { date }: { date: Date }) => get(date))
 
-    ipcMain.handle('set-costumers', (_e, { date, orders }: { date: string, orders: Order[] }) => {
-        return set(date, orders)
-    })
+    ipcMain.handle('set-costumers', (_e, { date, orders }: { date: Date, orders: Order[] }) => set(date, orders))
 }
 

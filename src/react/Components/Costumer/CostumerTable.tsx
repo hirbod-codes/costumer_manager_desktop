@@ -1,3 +1,10 @@
+import SquareIcon from '@mui/icons-material/SquareOutlined'
+import DeleteIcon from '@mui/icons-material/DeleteOutlined'
+import PauseIcon from '@mui/icons-material/PauseOutlined'
+import PlayArrowIcon from '@mui/icons-material/PlayArrowOutlined'
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRightOutlined';
+import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDownOutlined';
+
 import { useState, useEffect, useRef } from 'react'
 import { CircularProgress, Modal, Typography, Slide, Stack, Paper, Box, IconButton, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, TextField } from "@mui/material";
 import { Order } from "../../../Electron/Costumers/Order";
@@ -6,19 +13,10 @@ import type { costumerAPI } from '../../../Electron/Costumers/renderer/costumerA
 import type { configAPI } from '../../../Electron/Configuration/renderer/configAPI';
 import { AddColumn } from './AddColumn';
 import { DateTime } from 'luxon';
-
-import SquareIcon from '@mui/icons-material/SquareOutlined'
-import DeleteIcon from '@mui/icons-material/DeleteOutlined'
-import PauseIcon from '@mui/icons-material/PauseOutlined'
-import PlayArrowIcon from '@mui/icons-material/PlayArrowOutlined'
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRightOutlined';
-import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDownOutlined';
+import { Date } from '../../../react/Lib/DateTime';
 import { t } from 'i18next';
 
-export function CostumerTable({ gridDate }: { gridDate: string }) {
-    if (gridDate === 'Invalid DateTime')
-        return (<Typography>Invalid DateTime</Typography>)
-
+export function CostumerTable({ gridDate }: { gridDate: Date }) {
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const [showAddColumnModal, setShowAddColumnModal] = useState<boolean>(false);
@@ -236,7 +234,7 @@ export function CostumerTable({ gridDate }: { gridDate: string }) {
                                                             return r
                                                         }))}
                                                 >
-                                                    `${Math.floor(row.services[c.field].duration / 3600).toFixed(0)}:${Math.floor((row.services[c.field].duration % 3600) / 60).toFixed(0)}:${(((row.services[c.field].duration % 3600) % 60)).toFixed(0)}`
+                                                    {`${Math.floor(row.services[c.field].duration / 3600).toFixed(0)}:${Math.floor((row.services[c.field].duration % 3600) / 60).toFixed(0)}:${(((row.services[c.field].duration % 3600) % 60)).toFixed(0)}`}
                                                 </Typography>
                                                 :
                                                 <IconButton
@@ -268,6 +266,11 @@ export function CostumerTable({ gridDate }: { gridDate: string }) {
 
                             addingColumn.field = addingColumn.field.trim()
                             addingColumn.headerName = addingColumn.headerName.trim();
+
+                            if (columns.find(c => c.field === addingColumn.field) !== undefined) {
+                                setShowAddColumnModal(false)
+                                return
+                            }
 
                             const config = await (window as typeof window & { configAPI: configAPI }).configAPI.readConfig();
                             (window as typeof window & { configAPI: configAPI }).configAPI.writeConfig({ ...config, services: [...columns.map(c => c.field), addingColumn.field] })

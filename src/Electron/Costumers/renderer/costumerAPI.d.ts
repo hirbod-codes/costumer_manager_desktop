@@ -1,6 +1,7 @@
 import { Order } from '../Order';
+import { Date } from '../../../react/Lib/DateTime'
 
 export type costumerAPI = {
-    get: (date: string) => Promise<Order[] | undefined>;
-    set: (date: string, costumer: Order[]) => Promise<boolean>;
+    get: (date: Date) => Promise<Order[] | undefined>;
+    set: (date: Date, orders: Order[]) => Promise<boolean>;
 };
