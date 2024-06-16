@@ -40,7 +40,7 @@ export function Home() {
 
     return (
         <>
-            <Grid container spacing={1}>
+            <Grid container spacing={2} sx={{ p: 2 }}>
                 <Grid item sm={4} xs={6}>
                     <TextField label={t('year')} variant="standard" value={year ?? 0} fullWidth error={year === null} helperText={year !== null ? '' : t('invalid-year')} onChange={(e) => {
                         if (!number().required().min(1).isValidSync(e.target.value))
@@ -75,7 +75,7 @@ export function Home() {
                     {isLoading && gridDate
                         ? <CircularProgress />
                         :
-                        <Box sx={{ height: '70vh', width: '100%', p: 2 }}>
+                        <Box sx={{ height: '70vh', width: '100%' }}>
                             <CostumerTable gridDate={gridDate} />
                         </Box>
                     }

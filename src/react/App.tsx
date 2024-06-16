@@ -174,7 +174,7 @@ export function App() {
             <ConfigurationContext.Provider value={{ get: configuration, set: { updateTheme, updateLocale, updateTimeZone } }}>
                 <CacheProvider value={configuration.locale.direction === 'rtl' ? rtlCache : ltrCache}>
                     <ThemeProvider theme={configuration.theme}>
-                        <CssBaseline />
+                        <CssBaseline enableColorScheme />
                         <MenuBar backgroundColor={configuration.theme.palette.background.default} />
 
                         <AppBar position='relative'>

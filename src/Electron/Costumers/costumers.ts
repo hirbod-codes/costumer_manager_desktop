@@ -32,7 +32,7 @@ export function set(date: Date, orders: Order[]): boolean {
         if (!mixed<Date>().required().isValidSync(date))
             return false
 
-        if (!array().required().min(1).of(mixed<Order>().required()).isValidSync(orders))
+        if (!array().required().of(mixed<Order>().required()).isValidSync(orders))
             return false
 
         const costumerFolder = path.join(app.getPath('appData'), app.getName(), 'Costumers')
