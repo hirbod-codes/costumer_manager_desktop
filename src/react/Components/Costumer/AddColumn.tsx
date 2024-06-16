@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Order } from "../../../Electron/Costumers/Order";
 import { GridColDef } from "@mui/x-data-grid";
-import { IconButton, TextField } from "@mui/material";
+import { IconButton, TextField, Typography } from "@mui/material";
+import { t } from "i18next";
 
 import DoneIcon from '@mui/icons-material/DoneOutline'
 
@@ -10,10 +11,9 @@ export function AddColumn({ onFinish }: { onFinish: (o: GridColDef<Order>) => Pr
 
     return (
         <>
-            <h1>Add a column</h1>
+            <Typography component={'h1'}>{t('Add a column')}</Typography>
 
             <TextField label='Column name' value={column.headerName} onChange={(e) => setColumn({ ...column, field: e.target.value, headerName: e.target.value })} />
-            <TextField label='Column width' value={column.width!.toString()} onChange={(e) => setColumn({ ...column, field: e.target.value, width: Number(e.target.value) })} />
 
             <IconButton onClick={() => onFinish(column)} >
                 <DoneIcon />
