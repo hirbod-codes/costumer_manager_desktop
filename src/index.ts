@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import { handleMenuEvents } from './Electron/Menu/menu';
 import { handleConfigEvents } from './Electron/Configuration/configuration';
+import { handleCostumersEvents } from './Electron/Costumers/costumers';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
@@ -30,6 +31,7 @@ app.on('ready', () => {
 
     handleMenuEvents()
     handleConfigEvents()
+    handleCostumersEvents()
 })
 
 app.on('window-all-closed', () => {
